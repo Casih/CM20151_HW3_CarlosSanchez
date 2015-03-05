@@ -17,7 +17,6 @@ def escalera(x):
    			formas.append(formas[-1]+formas[-2])
   		return formas[-1]
 
-formas=[1,2]
 #generalizando a cualquier numero de escalones
 #x = input("Para cuantos escalos quieres saber cuantas formas de subir hay? ")
 #print ("Escogiste " + str(x) + " escalones")
@@ -25,12 +24,30 @@ formas=[1,2]
 
 print (str(escalera(13)) + " formas de escalar una escalera de 13 escalones y " + str(escalera(15)) + " formas de escalar una escalera de 15 escalones")
 
+
+# A continuacion muestro 5 ejemplos ademas del puesto en el taller, de pares de vectores A y B que evidencian el funcionamiento del script.
+
 A = [4,4,5,5,1]
 B = [3,2,4,3,1]
 
+#A = [5,6,7,8,9,1,2,3,4,5] 
+#B = [1,2,3,4,4,3,2,1,2,3]
+
+#A = [1000000,1,2,3]
+#B = [1,2,3,4]
+
+#A = [1,2]
+#B = [21,5]
+
+#A = []
+#B = []
+
+#A = [1,2,3]
+#B = [1,2]
+
 def escaleras(A,B):
 
-	err_msg1 = "El rango de A no está entre 1 y 10000"
+	err_msg1 = "El rango de A y B no están entre 1 y 10000"
 	err_msg2 = "Algun elemento de A se sale del rango de valores establecidos"
 	err_msg3 = "Algun elemento de B se sale del rango de valores establecidos"
 	err_msg4 = "Los arreglos ingresados no tienen la misma dimension"
