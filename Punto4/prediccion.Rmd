@@ -1,0 +1,57 @@
+---
+title: "Pruebas con ggplot"
+author: "casi"
+date: "Marzo 04, 2015"
+output: html_document
+---
+
+Primero cargo los paquetes
+
+```{r}
+# install.packages("Quandl")
+library(ggplot2)
+library(Quandl)
+library(scales)
+Quandl.auth("ZTDwNh5a3u9-UdohFwS_") # esto se hace para que quandl entregue todos los valores de la serie de tiempo
+```
+
+Después cargo los datos:
+
+```{r}
+mis_datos = Quandl("BNP/USDCOP", start_date="2000-1-1", end_date="2015-2-23")
+str(mis_datos)
+```
+
+La primera pregunta me pide que muestre los primeros 5 valores del dolar en la serie de tiempo, que corresponden a enero 5, 4, 3, 2, 1, respectivamente:
+
+```{r}
+tail(mis_datos$'USD/COP',5)
+```
+
+La siguiente nos pide que creemos una visualización de los datos.
+
+```{r,fig.width=10, fig.height=5}
+p = ggplot(mis_datos, aes(x=Date,y= mis_datos$'USD/COP')) + geom_line() + xlab('Fecha') + ylab('Precio de 1 dolar en Pesos colombianos') + ggtitle('Precio del dolar a traves del tiempo entre \n el 1 de Enero del 2000 hasta el 23 de Febrero del 2015') + theme(plot.title = element_text(lineheight=1, face="bold")) + theme(axis.title.x=element_text(size=15),axis.title.y=element_text(size=15)) + theme_bw() 
+print(p) 
+```
+
+```{r}
+mis_datos$year <- format(mis_datos$Date, "%Y")
+str(mis_datos)
+```
+
+Decidí no usar el paquete lubridate (me pareció innecesario).
+
+```{r,fig.width=10, fig.height=20}
+p2 = ggplot(mis_datos, aes(x=year,y= mis_datos$'USD/COP')) + geom_boxplot() + xlab('Fecha') + ylab('Precio de 1 dolar en Pesos colombianos') + ggtitle('Precio del dolar a traves del tiempo entre \n el 1 de Enero del 2000 hasta el 23 de Febrero del 2015') + theme(plot.title = element_text(lineheight=1, face="bold")) + facet_wrap(~year, scales ="free") + theme(axis.ticks = element_blank(), axis.text.x = element_blank()) + theme(axis.title.x=element_text(size=20), axis.title.y=element_text(size=20)) + theme_bw() + theme(axis.ticks = element_blank(), axis.text.x = element_blank())
+print(p2)
+```
+
+Para hacer la predicción se escogió el método *gam*, el proposito de los modelos aditivos generalizados es maaximizar la calidad de la prediccion de la variable dependiente de varias distribuciones, estimando funciones en cada valor, y se modela la curva como si fuera una suma de funciones.  
+
+ademas en las series de tiempo, los "errores" en las lineas de tiempo suelen estar correlacionados entre sí, violando el cuarto supuesto para modelos lineales, y da un ajuste mas exacto comparado con *glm* 
+
+```{r,fig.width=10, fig.height=5}
+p3 = ggplot(mis_datos, aes(x=Date,y= mis_datos$'USD/COP'))+ geom_line() + xlab('Fecha') + ylab('Precio de 1 dolar en Pesos colombianos') + ggtitle('Precio del dolar a traves del tiempo entre \n el 1 de Enero del 2000 hasta el 23 de Febrero del 2015') + theme(plot.title = element_text(lineheight=1, face="bold")) + theme(axis.title.x=element_text(size=15),axis.title.y=element_text(size=15)) + stat_smooth(method="gam",formula = y ~s (x,bs="cs"),fullrange=TRUE) + scale_x_date(limits = c(as.Date("2000-1-1"), as.Date("2017-12-31"))) + theme_bw() 
+print(p3)
+```
